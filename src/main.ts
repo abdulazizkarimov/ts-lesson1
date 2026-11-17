@@ -4,12 +4,14 @@ import * as calc from "./calculations.js"
 import { validateTrade } from "./validation.js";
 import { createTrades } from "./data/trades.js";
 import { fetchPrice } from "./api.js";
+import writeLine from "./logger.js"; // default import: the name is chosen here, not in logger.ts
 
 function errorMessage(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
 }
 
 async function main(): Promise<void> {
+    writeLine("Trade report started");
     const trades: Trade[] = createTrades();
 
     console.log("--- Validation ---");
