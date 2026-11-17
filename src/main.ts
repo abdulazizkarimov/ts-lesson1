@@ -1,6 +1,5 @@
-import { SIDES } from "./models/index.js";
-import type { Trade } from "./models/index.js";
-import * as calc from "./calculations.js"
+import { SIDES, type Trade } from "./models/index.js";
+import * as calc from "./calculations.js";
 import { validateTrade } from "./validation.js";
 import { createTrades } from "./data/trades.js";
 import { fetchPrice } from "./api.js";
@@ -12,6 +11,13 @@ function errorMessage(error: unknown): string {
 }
 
 async function main(): Promise<void> {
+    const aaplPrice = await fetchPrice("AAPL");
+    console.log(`AAPL (top-level await): ${aaplPrice}\n`);
+    
+    // Resolved relative to this file, so it works from any folder.
+    const fileTrades = await loadTrades(new URL("../trades.json", import.meta.url));
+    console.log(`Loaded ${fileTrades.length} trades from trades.json: ${fileTrades.map((trade) => trade.id).join(", ")}\n`);
+
     writeLine("Trade report started");
     const trades: Trade[] = createTrades();
 
@@ -51,13 +57,7 @@ async function main(): Promise<void> {
     });
 }
 
-const aaplPrice = await fetchPrice("AAPL");
-console.log(`AAPL (top-level await): ${aaplPrice}\n`);
-
-// Path is relative to the current working directory, so run from the project root.
-const fileTrades = await loadTrades("trades.json");
-console.log(`Loaded ${fileTrades.length} trades from trades.json: ${fileTrades.map((trade) => trade.id).join(", ")}\n`);
-
 main().catch((error: unknown) => {
     console.error(`Unexpected error: ${errorMessage(error)}`);
+    process.exitCode = 1;
 });

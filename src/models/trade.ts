@@ -10,4 +10,4 @@ export interface Trade {
     commissionPercent?: number;
     note?: string;
     canceledAt: string | null;
-};
+}

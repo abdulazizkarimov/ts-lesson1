@@ -1,6 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { SIDES } from "./models/index.js";
-import type { Side, Trade } from "./models/index.js";
+import { SIDES, type Side, type Trade } from "./models/index.js";
 
 function isSide(x: unknown): x is Side {
     return SIDES.some((side) => side === x);
@@ -24,7 +23,7 @@ export function isTrade(x: unknown): x is Trade {
     );
 }
 
-export async function loadTrades(path: string): Promise<Trade[]> {
+export async function loadTrades(path: string | URL): Promise<Trade[]> {
     const text = await readFile(path, "utf-8");
     const data: unknown = JSON.parse(text);
 
