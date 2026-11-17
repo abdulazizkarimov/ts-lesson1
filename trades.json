@@ -1,0 +1,5 @@
+[
+    { "id": "J1", "symbol": "NVDA", "side": "buy", "quantity": 4, "price": 120, "commissionPercent": 0.5, "canceledAt": null },
+    { "id": "J2", "symbol": "AMZN", "side": "sell", "quantity": 2, "price": 180, "note": "Rebalance", "canceledAt": null },
+    { "id": "J3", "symbol": "MSFT", "side": "buy", "quantity": 1, "price": 410, "canceledAt": "2026-11-15" }
+]

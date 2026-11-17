@@ -5,6 +5,7 @@ import { validateTrade } from "./validation.js";
 import { createTrades } from "./data/trades.js";
 import { fetchPrice } from "./api.js";
 import writeLine from "./logger.js"; // default import: the name is chosen here, not in logger.ts
+import { loadTrades } from "./load-trades.js";
 
 function errorMessage(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
@@ -52,6 +53,10 @@ async function main(): Promise<void> {
 
 const aaplPrice = await fetchPrice("AAPL");
 console.log(`AAPL (top-level await): ${aaplPrice}\n`);
+
+// Path is relative to the current working directory, so run from the project root.
+const fileTrades = await loadTrades("trades.json");
+console.log(`Loaded ${fileTrades.length} trades from trades.json: ${fileTrades.map((trade) => trade.id).join(", ")}\n`);
 
 main().catch((error: unknown) => {
     console.error(`Unexpected error: ${errorMessage(error)}`);
