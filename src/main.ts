@@ -2,7 +2,7 @@ import { SIDES, type Trade } from "./models/index.js";
 import * as calc from "./calculations.js";
 import { validateTrade } from "./validation.js";
 import { createTrades } from "./data/trades.js";
-import { fetchPrice } from "./api.js";
+import { fetchPrice, fetchTrade } from "./api.js";
 import writeLine from "./logger.js"; // default import: the name is chosen here, not in logger.ts
 import { loadTrades } from "./load-trades.js";
 
@@ -55,6 +55,17 @@ async function main(): Promise<void> {
                 : `   ${symbol}: failed (${errorMessage(result.reason)})`
         );
     });
+
+    console.log("\n--- Fetch trades (ApiResult) ---");
+    for (const id of ["T1", "T3", "T9"]) {
+        const result = await fetchTrade(id);
+        if (!result.ok) {
+            console.log(`   ${id}: Failed (${result.status}): ${result.error}`);
+            continue;
+        }
+        // Narrowed to { ok: true; data: Trade } here.
+        console.log(`   ${id}: Trade value: ${calc.tradeValue(result.data).toFixed(2)}`);
+    }
 }
 
 main().catch((error: unknown) => {
