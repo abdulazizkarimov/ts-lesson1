@@ -1,4 +1,4 @@
-import { SIDES, type Trade } from "./models/index.js";
+import { SIDES, assertIsTrade, type Trade } from "./models/index.js";
 import * as calc from "./calculations.js";
 import { validateTrade } from "./validation.js";
 import { createTrades } from "./data/trades.js";
@@ -81,6 +81,16 @@ async function main(): Promise<void> {
         }
         // Narrowed to { ok: true; data: Trade } here.
         console.log(`   ${id}: Trade value: ${calc.tradeValue(result.data).toFixed(2)}`);
+    }
+
+    console.log("\n--- assertIsTrade ---");
+    const notATrade: unknown = { id: "X" };
+    try {
+        assertIsTrade(notATrade);
+        // Only reached if the assertion passes; notATrade is a Trade here.
+        console.log(`   Valid trade: ${notATrade.symbol}`);
+    } catch (error) {
+        console.log(`   ${errorMessage(error)}`);
     }
 }
 

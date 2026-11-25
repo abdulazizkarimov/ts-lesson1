@@ -1,41 +1,17 @@
 import { readFile } from "node:fs/promises";
-import { SIDES, type Side, type Trade } from "./models/index.js";
-
-function isSide(x: unknown): x is Side {
-    return SIDES.some((side) => side === x);
-}
-
-export function isTrade(x: unknown): x is Trade {
-    if (typeof x !== "object" || x === null) {
-        return false;
-    }
-    const t = x as Record<string, unknown>;
-
-    return (
-        typeof t.id === "string" &&
-        typeof t.symbol === "string" &&
-        isSide(t.side) &&
-        typeof t.quantity === "number" &&
-        typeof t.price === "number" &&
-        (t.commissionPercent === undefined || typeof t.commissionPercent === "number") &&
-        (t.note === undefined || typeof t.note === "string") &&
-        (t.canceledAt === null || typeof t.canceledAt === "string")
-    );
-}
+import { fileURLToPath } from "node:url";
+import { isTrade, type Trade } from "./models/index.js";
+import { parseArray } from "./utils/validation.js";
 
 export async function loadTrades(path: string | URL): Promise<Trade[]> {
     const text = await readFile(path, "utf-8");
-    const data: unknown = JSON.parse(text);
 
-    if (!Array.isArray(data)) {
-        throw new Error(`${path}: expected an array of trades, got ${typeof data}`);
+    try {
+        const data: unknown = JSON.parse(text);
+        return parseArray(data, isTrade, "trade");
+    } catch (error) {
+        const file = path instanceof URL ? fileURLToPath(path) : path;
+        const message = error instanceof Error ? error.message : String(error);
+        throw new Error(`${file}: ${message}`, { cause: error });
     }
-
-    // every() with a type guard narrows the array itself to Trade[].
-    if (!data.every(isTrade)) {
-        const badIndex = data.findIndex((item) => !isTrade(item));
-        throw new Error(`${path}: item at index ${badIndex} is not a valid trade: ${JSON.stringify(data[badIndex])}`);
-    }
-
-    return data;
 }
