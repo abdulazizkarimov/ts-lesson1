@@ -4,7 +4,7 @@ import { validateTrade } from "./validation.js";
 import { createTrade, createTrades } from "./data/trades.js";
 import { fetchPrice, fetchTrade } from "./api.js";
 import writeLine from "./logger.js"; // default import: the name is chosen here, not in logger.ts
-import { loadTrades } from "./load-trades.js";
+import { loadTrades, loadTradesWithZod } from "./load-trades.js";
 import { maxBy, sumBy } from "./utils/collections.js";
 
 function errorMessage(error: unknown): string {
@@ -18,6 +18,9 @@ async function main(): Promise<void> {
     // Resolved relative to this file, so it works from any folder.
     const fileTrades = await loadTrades(new URL("../trades.json", import.meta.url));
     console.log(`Loaded ${fileTrades.length} trades from trades.json: ${fileTrades.map((trade) => trade.id).join(", ")}\n`);
+
+    const zodTrades = await loadTradesWithZod(new URL("../trades.json", import.meta.url));
+    console.log(`Zod loaded ${zodTrades.length} trades: ${zodTrades.map((t) => t.id).join(", ")}\n`);
 
     writeLine("Trade report started");
     const trades: Trade[] = createTrades();
