@@ -5,6 +5,7 @@ import { createTrades } from "./data/trades.js";
 import { fetchPrice, fetchTrade } from "./api.js";
 import writeLine from "./logger.js"; // default import: the name is chosen here, not in logger.ts
 import { loadTrades } from "./load-trades.js";
+import { maxBy, sumBy } from "./utils/collections.js";
 
 function errorMessage(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
@@ -43,6 +44,21 @@ async function main(): Promise<void> {
     for (const trade of validTrades) {
         console.log(`   ${trade.id}: ${calc.effectiveCommission(trade)}%`);
     }
+
+    console.log("\n--- Collection helpers ---");
+    const totalQuantity = sumBy(validTrades, (trade) => trade.quantity);
+    console.log(`   Total quantity of valid trades: ${totalQuantity}`);
+
+    const largest = maxBy(validTrades, calc.tradeValue);
+    console.log(
+        largest
+            ? `   Highest trade value: ${largest.id} -> ${calc.tradeValue(largest).toFixed(2)}`
+            : "   Highest trade value: (no trades)"
+    );
+
+    const noTrades: Trade[] = [];
+    const largestOfNone = maxBy(noTrades, calc.tradeValue);
+    console.log(`   maxBy on an empty array: ${largestOfNone}`);
 
     console.log("\n--- Live prices ---");
     const symbols = [...new Set(validTrades.map((trade) => trade.symbol)), "GOOG"];
