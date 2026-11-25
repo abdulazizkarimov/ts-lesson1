@@ -1,7 +1,7 @@
-import { SIDES, assertIsTrade, type Trade } from "./models/index.js";
+import { SIDES, assertIsTrade, type Trade, type TradeSummary } from "./models/index.js";
 import * as calc from "./calculations.js";
 import { validateTrade } from "./validation.js";
-import { createTrades } from "./data/trades.js";
+import { createTrade, createTrades } from "./data/trades.js";
 import { fetchPrice, fetchTrade } from "./api.js";
 import writeLine from "./logger.js"; // default import: the name is chosen here, not in logger.ts
 import { loadTrades } from "./load-trades.js";
@@ -92,6 +92,17 @@ async function main(): Promise<void> {
     } catch (error) {
         console.log(`   ${errorMessage(error)}`);
     }
+
+    console.log("\n--- Test data builder (createTrade) ---");
+    const freeSell = createTrade({ id: "B1", side: "sell", commissionPercent: 0 });
+    const canceled = createTrade({ id: "B2", canceledAt: "2026-11-20" });
+    for (const trade of [freeSell, canceled]) {
+        console.log(`   ${trade.id}: ${trade.side} ${trade.quantity} ${trade.symbol} @ ${trade.price}, commission ${trade.commissionPercent ?? "none"}, canceled ${trade.canceledAt ?? "no"} -> value ${calc.tradeValue(trade).toFixed(2)}`);
+    }
+
+    console.log("\n--- Trade summaries (Pick) ---");
+    const summaries: TradeSummary[] = validTrades.map(({ id, symbol, side }) => ({ id, symbol, side }));
+    console.table(summaries);
 }
 
 main().catch((error: unknown) => {

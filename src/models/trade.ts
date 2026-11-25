@@ -12,6 +12,10 @@ export interface Trade {
     canceledAt: string | null;
 }
 
+export type NewTrade = Omit<Trade, "id">;
+
+export type TradeSummary = Pick<Trade, "id" | "symbol" | "side">;
+
 function isSide(x: unknown): x is Side {
     return SIDES.some((side) => side === x);
 }

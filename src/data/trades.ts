@@ -1,4 +1,4 @@
-import type { Trade } from "../models/index.js";
+import type { NewTrade, Trade } from "../models/index.js";
 
 export function createTrades(): Trade[] {
     return [
@@ -8,4 +8,21 @@ export function createTrades(): Trade[] {
         { id: "T4", symbol: "", side: "sell", quantity: 2.5, price: -10, canceledAt: null }, // invalid
         { id: "T5", symbol: "TSLA", side: "sell", quantity: 3, price: 250, commissionPercent: 0.5, note: "Partial take-profit", canceledAt: null },
     ];
+}
+
+export function createTrade(overrides: Partial<Trade> = {}): Trade {
+    return {
+        id: "T-TEST",
+        symbol: "AAPL",
+        side: "buy",
+        quantity: 10,
+        price: 150,
+        canceledAt: null,
+        ...overrides,
+    };
+}
+
+export function withId(input: NewTrade, id: string): Trade {
+    // id goes last, so it wins even if input has an extra id at runtime.
+    return { ...input, id };
 }
