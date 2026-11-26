@@ -13,7 +13,7 @@ function errorMessage(error: unknown): string {
 
 async function main(): Promise<void> {
     const aaplPrice = await fetchPrice("AAPL");
-    console.log(`AAPL (top-level await): ${aaplPrice}\n`);
+    console.log(`AAPL price: ${aaplPrice}\n`);
     
     // Resolved relative to this file, so it works from any folder.
     const fileTrades = await loadTrades(new URL("../trades.json", import.meta.url));
