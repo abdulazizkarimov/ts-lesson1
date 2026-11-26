@@ -1,6 +1,6 @@
 import { SIDES, assertIsTrade, type Trade, type TradeSummary } from "./models/index.js";
 import * as calc from "./calculations.js";
-import { validateTrade } from "./validation.js";
+import { validateTrade } from "./business-rules.js";
 import { createTrade, createTrades } from "./data/trades.js";
 import { fetchPrice, fetchTrade } from "./api.js";
 import writeLine from "./logger.js"; // default import: the name is chosen here, not in logger.ts

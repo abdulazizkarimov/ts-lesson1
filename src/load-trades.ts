@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 import { TradeSchema, isTrade, type Trade } from "./models/index.js";
-import { parseArray } from "./utils/validation.js";
+import { parseArray } from "./utils/parsing.js";
 
 function displayPath(path: string | URL): string {
     return path instanceof URL ? fileURLToPath(path) : path;
