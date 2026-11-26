@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SIDES } from "./trade.js";
+import { SIDES, type Trade } from "./trade.js";
 
 export const TradeSchema = z.object({
     id: z.string(),
@@ -13,3 +13,13 @@ export const TradeSchema = z.object({
 });
 
 export type ParsedTrade = z.infer<typeof TradeSchema>;
+
+export function isTrade(x: unknown): x is Trade {
+    return TradeSchema.safeParse(x).success;
+}
+
+export function assertIsTrade(x: unknown): asserts x is Trade {
+    if (!isTrade(x)) {
+        throw new Error(`Not a valid trade: ${JSON.stringify(x)}`);
+    }
+}
